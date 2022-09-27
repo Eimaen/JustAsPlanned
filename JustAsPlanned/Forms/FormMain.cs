@@ -45,46 +45,64 @@ namespace JustAsPlanned.Forms
         {
             Thread threadMain = new Thread(() =>
             {
-                if (!Process.GetProcessesByName("Steam").Any())
+                try
                 {
-                    status = "Unable to start Muse Dash. Steam is not running.";
-                    Thread.Sleep(7500);
-                    Environment.Exit(0);
-                }
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = Path.Combine(Registry.LocalMachine.GetValue(@"SOFTWARE\Wow6432Node\Valve\Steam\InstallPath", @"C:\Program Files (x86)\Steam", RegistryValueOptions.None).ToString(), "steam.exe"),
-                    Arguments = "-applaunch 774171"
-                });
-                DateTime waitStart = DateTime.Now;
-                while (!IsDisposed)
-                {
-                    TimeSpan waitRemaining = TimeSpan.FromSeconds(15) - (DateTime.Now - waitStart);
-                    if (Process.GetProcessesByName("MuseDash").Any())
+                    
+                    RegistryKey steamRegKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Valve\Steam");
+                    if (steamRegKey == null)
                     {
-                        status = "Process found, applying patch...";
-                        int retries = 0;
-                        while (Process.GetProcessesByName("MuseDash").Any() && !MuseDash.Exploit(Process.GetProcessesByName("MuseDash")?.First()) && ++retries < 100)
-                        {
-                            status = $"Failed to patch, retrying... Attempt #{retries}";
-                            Thread.Sleep(50);
-                        }
-                        if (retries == 100)
-                            status = "Failed to patch Muse Dash.";
-                        else
-                            status = "Muse Dash patched successfully.";
-                        Thread.Sleep(7500);
-                        Environment.Exit(0);
-                    } 
-                    else
-                        status = $"Waiting for Muse Dash process ({Math.Round(waitRemaining.TotalSeconds)}s remaining)...";
-                    if (waitRemaining.TotalSeconds <= 0)
-                    {
-                        status = "Failed to patch Muse Dash. Process was not found.";
+                        status = "Unable to start Muse Dash. Is Steam even installed?";
                         Thread.Sleep(7500);
                         Environment.Exit(0);
                     }
-                    Thread.Sleep(10);
+                    if (!Process.GetProcessesByName("Steam").Any())
+                    {
+                        status = "Unable to start Muse Dash. Steam is not running.";
+                        Thread.Sleep(7500);
+                        Environment.Exit(0);
+                    }
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = Path.Combine(steamRegKey.GetValue("InstallPath") as string, "steam.exe"),
+                        Arguments = "-applaunch 774171"
+                    });
+                    DateTime waitStart = DateTime.Now;
+                    while (!IsDisposed)
+                    {
+                        TimeSpan waitRemaining = TimeSpan.FromSeconds(15) - (DateTime.Now - waitStart);
+                        if (Process.GetProcessesByName("MuseDash").Any())
+                        {
+                            status = "Process found, applying patch...";
+                            int retries = 0;
+                            while (Process.GetProcessesByName("MuseDash").Any() && !MuseDash.Exploit(Process.GetProcessesByName("MuseDash")?.First()) && ++retries < 100)
+                            {
+                                status = $"Failed to patch, retrying... Attempt #{retries}";
+                                Thread.Sleep(50);
+                            }
+                            if (retries == 100)
+                                status = "Failed to patch Muse Dash.";
+                            else
+                                status = "Muse Dash patched successfully.";
+                            Thread.Sleep(7500);
+                            Environment.Exit(0);
+                        }
+                        else
+                            status = $"Waiting for Muse Dash process ({Math.Round(waitRemaining.TotalSeconds)}s remaining)...";
+                        if (waitRemaining.TotalSeconds <= 0)
+                        {
+                            status = "Failed to patch Muse Dash. Process was not found.";
+                            Thread.Sleep(7500);
+                            Environment.Exit(0);
+                        }
+                        Thread.Sleep(10);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.WriteAllText("jap-crash.txt", ex.ToString());
+                    status = $"Failed to patch Muse Dash. Ex: {ex.Message}.";
+                    Thread.Sleep(7500);
+                    Environment.Exit(0);
                 }
             });
             threadMain.Start();
