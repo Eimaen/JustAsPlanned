@@ -16,3 +16,6 @@
 1. Clone the repository.
 2. Open it with Visual Studio.
 3. Build the project and run.
+
+## Showcase
+Usage video: [click](https://www.youtube.com/watch?v=0IyZXqEzlRg)
