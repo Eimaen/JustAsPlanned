@@ -19,3 +19,6 @@
 
 ## Showcase
 Usage video: [click](https://www.youtube.com/watch?v=0IyZXqEzlRg)
+
+## If this shit still works
+Please give it your star~
