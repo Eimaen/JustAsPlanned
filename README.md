@@ -20,7 +20,7 @@
 ## Showcase
 Usage video: [click](https://www.youtube.com/watch?v=0IyZXqEzlRg)
 
-# Contributing
+## Contributing
 Oh fine if you have a better banner than [this](https://raw.githubusercontent.com/Eimaen/JustAsPlanned/master/JustAsPlanned/Resources/banner.png):
 
 ![This](https://raw.githubusercontent.com/Eimaen/JustAsPlanned/master/JustAsPlanned/Resources/banner.png)
