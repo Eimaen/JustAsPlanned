@@ -28,7 +28,7 @@ namespace JustAsPlanned.Utils
                 });
                 IntPtr purchaseTimeAddr = memory.PatternScan(Patterns.SteamDlcPurchaseDate, memory.GetModuleByName("GameAssembly.dll"));
                 memory.Write(purchaseTimeAddr, new byte[] {
-                    0xB8, 0xFF, 0xF7, 0x13, 0x37,
+                    0xB8, 0x85, 0x47, 0xDE, 0x63,
                     0xC3
                 });
             }
