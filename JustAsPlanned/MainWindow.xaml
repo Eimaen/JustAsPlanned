@@ -1,0 +1,35 @@
+﻿<Window x:Class="JustAsPlanned.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:JustAsPlanned"
+        mc:Ignorable="d"
+        Title="MainWindow" Background="Transparent" AllowsTransparency="True" Height="160" Width="640" WindowStyle="None" ResizeMode="NoResize">
+    <Border BorderThickness="10">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="1" Color="Black" />
+        </Border.Effect>
+        <Border x:Name="bMain" BorderBrush="Transparent" Background="#FF22173C" CornerRadius="10">
+
+            <Border.OpacityMask>
+                <VisualBrush>
+                    <VisualBrush.Visual>
+                        <Border 
+                    Background="Black"
+                    SnapsToDevicePixels="True"
+                    CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=Border}}"
+                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                    Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"
+                    />
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Border.OpacityMask>
+            <Grid>
+                <Border x:Name="bProgress" Background="white" Opacity="0.05" HorizontalAlignment="Left" Width="0" Margin="0,0,0,0"/>
+                <Label Content="Just As Planned" Foreground="White" Margin="0,27,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="32" FontWeight="Bold" Width="382"/>
+                <Label x:Name="lblStatus" Content="Initializing..." Foreground="White" Margin="0,80,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="20" Width="550"/>
+            </Grid>
+        </Border>
+    </Border>
+</Window>

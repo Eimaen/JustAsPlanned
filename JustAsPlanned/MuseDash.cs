@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JustAsPlanned.Utils
+namespace JustAsPlanned
 {
     static class MuseDash
     {
