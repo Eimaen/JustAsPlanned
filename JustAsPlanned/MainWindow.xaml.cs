@@ -74,6 +74,7 @@ namespace JustAsPlanned
                         Thread.Sleep(5000);
                         Environment.Exit(0);
                     }
+                    object steamInstallationPath = steamRegKey.GetValue("InstallPath");
                     actualProgress = 15;
                     UpdateStatus("Checking for Steam process...");
                     if (!Process.GetProcessesByName("Steam").Any())
@@ -83,13 +84,27 @@ namespace JustAsPlanned
                         Thread.Sleep(5000);
                         Environment.Exit(0);
                     }
+                    if (steamInstallationPath == null)
+                        steamInstallationPath = Process.GetProcessesByName("Steam").First().MainModule.FileName;
+                    else
+                        steamInstallationPath = System.IO.Path.Combine(steamInstallationPath.ToString(), "steam.exe");
                     actualProgress = 20;
                     UpdateStatus("Starting Muse Dash via Steam...");
-                    Process.Start(new ProcessStartInfo
+                    if (File.Exists(steamInstallationPath as string))
                     {
-                        FileName = System.IO.Path.Combine(steamRegKey.GetValue("InstallPath") as string, "steam.exe"),
-                        Arguments = "-applaunch 774171"
-                    });
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = steamInstallationPath as string,
+                            Arguments = "-applaunch 774171"
+                        });
+                    }
+                    else
+                    {
+                        DisplayCriticalFailture();
+                        UpdateStatus("How? Steam is running and doesn't exist?! Contact devs NOW.");
+                        Thread.Sleep(5000);
+                        Environment.Exit(0);
+                    }
                     DateTime waitStart = DateTime.Now;
                     while (true)
                     {
