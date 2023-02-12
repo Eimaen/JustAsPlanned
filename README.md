@@ -7,7 +7,7 @@
 ----
 
 ## Installation
-**Warning:** As the app contains scary (at least they seem scary for Windows Defender, lol) byte arrays, Defender deletes built binaries. Please exclude the binaries in Windows Defender settings. **You shouldn't trust me. If you don't, build an app yourself.** Also if you weren't RAT'd after using my builds, put a rocket emotion on the release idk.
+**Warning:** As the app contains byte arrays, Defender *sometimes* deletes built binaries. Please exclude the binaries in Windows Defender settings. **You shouldn't trust me. If you don't, build an app yourself.**
 
 ### Downloading prebuilt binaries
 1. Go to the [Releases](https://github.com/Eimaen/JustAsPlanned/releases) page and download latest version.
@@ -19,7 +19,7 @@
 3. Build the project and run.
 
 ## Showcase
-Usage video: [click](https://www.youtube.com/watch?v=0IyZXqEzlRg)
+Usage video: [click](https://www.youtube.com/watch?v=0IyZXqEzlRg) (this one has the old UI, but does the same thing)
 
-## If this shit still works
-Please give it your star~
+## Thank the dev
+Everybody likes Github stars, I'm not an exception. If this code was helpful, please consider starring the repo :3
