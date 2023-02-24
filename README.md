@@ -19,7 +19,9 @@
 3. Build the project and run.
 
 ## Showcase
-Usage video: [click](https://www.youtube.com/watch?v=0IyZXqEzlRg) (this one has the old UI, but does the same thing)
+**RU**: [запускаем jap с Машей в подвале](https://youtu.be/D7KyKm7DDFM) (это мем, но за то последняя версия)
+
+**EN**: [setup tutorial](https://www.youtube.com/watch?v=0IyZXqEzlRg) (this one has the old UI, but does the same thing)
 
 ## Thank the dev
 Everybody likes Github stars, I'm not an exception. If this code was helpful, please consider starring the repo :3
