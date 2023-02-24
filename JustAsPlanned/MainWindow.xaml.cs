@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -48,14 +51,14 @@ namespace JustAsPlanned
 
         void DisplayCriticalFailture() => Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
         {
-            ColorAnimation ca = new ColorAnimation(Color.FromRgb(110, 5, 5), new Duration(TimeSpan.FromSeconds(2)));
-            bMain.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
+            ColorAnimation ca = new ColorAnimation(System.Windows.Media.Color.FromRgb(110, 5, 5), new Duration(TimeSpan.FromSeconds(2)));
+            gridBackgroundBlur.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
         }));
 
         void DisplaySuccess() => Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
         {
-            ColorAnimation ca = new ColorAnimation(Color.FromRgb(5, 110, 5), new Duration(TimeSpan.FromSeconds(2)));
-            bMain.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
+            ColorAnimation ca = new ColorAnimation(System.Windows.Media.Color.FromRgb(5, 110, 5), new Duration(TimeSpan.FromSeconds(2)));
+            gridBackgroundBlur.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
         }));
 
         private void Run()
@@ -90,6 +93,7 @@ namespace JustAsPlanned
                         steamInstallationPath = System.IO.Path.Combine(steamInstallationPath.ToString(), "steam.exe");
                     actualProgress = 20;
                     UpdateStatus("Starting Muse Dash via Steam...");
+                    Thread.Sleep(3000);
                     if (File.Exists(steamInstallationPath as string))
                     {
                         Process.Start(new ProcessStartInfo
@@ -101,7 +105,7 @@ namespace JustAsPlanned
                     else
                     {
                         DisplayCriticalFailture();
-                        UpdateStatus("How? Steam is running and doesn't exist?! Contact devs NOW.");
+                        UpdateStatus("How? Steam is running and doesn't exist?! Contact devs.");
                         Thread.Sleep(5000);
                         Environment.Exit(0);
                     }
@@ -158,14 +162,76 @@ namespace JustAsPlanned
             threadMain.Start();
         }
 
+        private struct BackgroundImage
+        {
+            public string CopyrightMessage;
+            public string SourceUrl;
+            public Bitmap Image;
+        }
+
+        private List<BackgroundImage> backgroundImages = new List<BackgroundImage>
+        { 
+            new BackgroundImage {
+                SourceUrl = "https://www.pixiv.net/en/artworks/81691677",
+                CopyrightMessage = "Artwork by U-Joe, Pixiv ID: 81691677",
+                Image = Properties.Resources.Marisa
+            },
+            new BackgroundImage {
+                SourceUrl = "https://www.pixiv.net/en/artworks/105672733",
+                CopyrightMessage = "Artwork by Lanana, Pixiv ID: 105672733",
+                Image = Properties.Resources.Koishi
+            },
+            new BackgroundImage {
+                SourceUrl = "https://www.pixiv.net/en/artworks/64961553",
+                CopyrightMessage = "Artwork by 鳥成, Pixiv ID: 64961553",
+                Image = Properties.Resources.Youmu
+            }
+        };
+
+        BackgroundImage currentBackgroundImageData;
+
+        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DeleteObject([In] IntPtr hObject);
+
+        public ImageSource ImageSourceFromBitmap(Bitmap bmp)
+        {
+            var handle = bmp.GetHbitmap();
+            try
+            {
+                return Imaging.CreateBitmapSourceFromHBitmap(handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+            }
+            finally { DeleteObject(handle); }
+        }
+
+        public void LoadBackgroundImage()
+        {
+            currentBackgroundImageData = backgroundImages.OrderBy(x => Guid.NewGuid()).First();
+            Dispatcher.Invoke(DispatcherPriority.Render, new Action(() =>
+            {
+                lblCopyright.Content = currentBackgroundImageData.CopyrightMessage;
+                gridBackgroundImage.Background = new ImageBrush()
+                {
+                    ImageSource = ImageSourceFromBitmap(currentBackgroundImageData.Image),
+                    Stretch = Stretch.UniformToFill
+                };
+            }));
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            LoadBackgroundImage();
             Closed += OnClosedEvent;
             MouseDown += OnDragEvent;
             updateProgressThread = new Thread(UpdateProgress);
             updateProgressThread.Start();
             Run();
+        }
+
+        private void OpenCopyrightReference(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start(currentBackgroundImageData.SourceUrl);
         }
 
         private void OnDragEvent(object sender, MouseButtonEventArgs e)

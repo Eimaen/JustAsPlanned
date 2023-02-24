@@ -10,8 +10,7 @@
         <Border.Effect>
             <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="1" Color="Black" />
         </Border.Effect>
-        <Border x:Name="bMain" BorderBrush="Transparent" Background="#FF22173C" CornerRadius="10">
-
+        <Border x:Name="bMain" BorderBrush="Transparent" CornerRadius="10">
             <Border.OpacityMask>
                 <VisualBrush>
                     <VisualBrush.Visual>
@@ -26,9 +25,18 @@
                 </VisualBrush>
             </Border.OpacityMask>
             <Grid>
-                <Border x:Name="bProgress" Background="white" Opacity="0.05" HorizontalAlignment="Left" Width="0" Margin="0,0,0,0"/>
-                <Label Content="Just As Planned" Foreground="White" Margin="0,27,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="32" FontWeight="Bold" Width="382"/>
-                <Label x:Name="lblStatus" Content="Initializing..." Foreground="White" Margin="0,80,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="20" Width="550"/>
+                <Grid x:Name="gridBackgroundImage" Panel.ZIndex="1" Visibility="Visible"/>
+                <Grid x:Name="gridBackgroundBlur" Panel.ZIndex="2" Visibility="Visible">
+                    <Grid.Background>
+                        <SolidColorBrush Color="Black" Opacity=".5"/>
+                    </Grid.Background>
+                </Grid>
+                <Grid x:Name="gridContent" Panel.ZIndex="3" Visibility="Visible">
+                    <Border x:Name="bProgress" Background="White" Opacity="0.2" HorizontalAlignment="Left" Width="0" Margin="0,0,0,0"/>
+                    <Label Content="Just As Planned" Foreground="White" Margin="0,27,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="32" FontWeight="Bold" Width="382"/>
+                    <Label x:Name="lblStatus" Content="Initializing..." Foreground="White" Margin="0,80,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="20" Width="550"/>
+                    <Label x:Name="lblCopyright" Content="" Foreground="#AAAAAA" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="10" MouseDown="OpenCopyrightReference"/>
+                </Grid>
             </Grid>
         </Border>
     </Border>
