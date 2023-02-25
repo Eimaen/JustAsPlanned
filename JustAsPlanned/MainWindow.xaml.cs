@@ -162,6 +162,7 @@ namespace JustAsPlanned
                     Environment.Exit(0);
                 }
             });
+            threadMain.IsBackground = true;
             threadMain.Start();
         }
 
