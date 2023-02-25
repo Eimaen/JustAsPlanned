@@ -188,6 +188,11 @@ namespace JustAsPlanned
                 SourceUrl = "https://www.pixiv.net/en/artworks/64961553",
                 CopyrightMessage = "Artwork by 鳥成, Pixiv ID: 64961553",
                 Image = Properties.Resources.Youmu
+            },
+            new BackgroundImage {
+                SourceUrl = "https://www.pixiv.net/en/artworks/47424126",
+                CopyrightMessage = "Artwork by 雛見, Pixiv ID: 47424126",
+                Image = Properties.Resources.Minecraft
             }
         };
 
