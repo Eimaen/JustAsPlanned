@@ -19,8 +19,6 @@
 3. Build the project and run.
 
 ## Showcase
-**RU**: [запускаем jap с Машей в подвале](https://youtu.be/D7KyKm7DDFM) (это мем, но за то последняя версия)
-
 **EN**: [setup tutorial](https://www.youtube.com/watch?v=0IyZXqEzlRg) (this one has the old UI, but does the same thing)
 
 ## Thank the dev
