@@ -82,32 +82,35 @@ namespace JustAsPlanned
                     UpdateStatus("Checking for Steam process...");
                     if (!Process.GetProcessesByName("Steam").Any())
                     {
-                        DisplayCriticalFailture();
-                        UpdateStatus("Unable to start Muse Dash. Steam is not running.");
-                        Thread.Sleep(5000);
-                        Environment.Exit(0);
+                        actualProgress = 20;
+                        UpdateStatus("No Steam process found. Waiting for MuseDash...");
+                        while (!Process.GetProcessesByName("MuseDash").Any())
+                            Thread.Sleep(100);
                     }
-                    if (steamInstallationPath == null)
-                        steamInstallationPath = Process.GetProcessesByName("Steam").First().MainModule.FileName;
                     else
-                        steamInstallationPath = System.IO.Path.Combine(steamInstallationPath.ToString(), "steam.exe");
-                    actualProgress = 20;
-                    UpdateStatus("Starting Muse Dash via Steam...");
-                    Thread.Sleep(3000);
-                    if (File.Exists(steamInstallationPath as string))
                     {
-                        Process.Start(new ProcessStartInfo
+                        if (steamInstallationPath == null)
+                            steamInstallationPath = Process.GetProcessesByName("Steam").First().MainModule.FileName;
+                        else
+                            steamInstallationPath = System.IO.Path.Combine(steamInstallationPath.ToString(), "steam.exe");
+                        actualProgress = 20;
+                        UpdateStatus("Starting Muse Dash via Steam...");
+                        Thread.Sleep(3000);
+                        if (File.Exists(steamInstallationPath as string))
                         {
-                            FileName = steamInstallationPath as string,
-                            Arguments = "-applaunch 774171"
-                        });
-                    }
-                    else
-                    {
-                        DisplayCriticalFailture();
-                        UpdateStatus("How? Steam is running and doesn't exist?! Contact devs.");
-                        Thread.Sleep(5000);
-                        Environment.Exit(0);
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = steamInstallationPath as string,
+                                Arguments = "-applaunch 774171"
+                            });
+                        }
+                        else
+                        {
+                            DisplayCriticalFailture();
+                            UpdateStatus("How? Steam is running and doesn't exist?! Contact devs.");
+                            Thread.Sleep(5000);
+                            Environment.Exit(0);
+                        }
                     }
                     DateTime waitStart = DateTime.Now;
                     while (true)
