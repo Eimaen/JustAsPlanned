@@ -31,6 +31,7 @@
 ### Videos
 If you don't get it, check usage videos below:
 - [video tutorial](https://www.youtube.com/watch?v=0IyZXqEzlRg) (this one has the old UI, but does the same thing)
+- [new video tutorial](https://www.youtube.com/watch?v=pjx6BY-UI6Y)
 
 ## Thank the dev
 Everybody likes Github stars, I'm not an exception. If this code was helpful, please consider starring the repo :3
