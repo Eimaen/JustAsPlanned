@@ -35,3 +35,7 @@ If you don't get it, check usage videos below:
 
 ## Thank the dev
 Everybody likes Github stars, I'm not an exception. If this code was helpful, please consider starring the repo :3
+
+
+## Reference
+Something doesn't work? Try [JustAsPlannedMelon](https://github.com/Eimaen/JustAsPlannedMelon) mod for MelonLoader!
