@@ -5,21 +5,11 @@
 [![Discord](https://img.shields.io/discord/1070816148838420561?label=discord&logo=discord&logoColor=fff)](https://discord.gg/jz7XnfDE7j)
 
 ----
-
-## Installation
-**Warning:** As the app contains byte arrays, Defender *sometimes* deletes built binaries. Please exclude the binaries in Windows Defender settings. **You shouldn't trust me. If you don't, build an app yourself.**
-
-### Downloading prebuilt binaries
-1. Go to the [Releases](https://github.com/Eimaen/JustAsPlanned/releases) page and download latest version.
-2. Open it (Steam has to be running too).
-
-### DIY guide
-1. Clone the repository.
-2. Open it with Visual Studio.
-3. Build the project and run.
+## Big warning!
+Somehow the software is since today treated as `Trojan:Win32/Wacatac.B!ml` by Windows Defender. Now with any release I publish will come a VirusTotal link. Again, **you shouldn't trust me. If you don't, build an app yourself.**
 
 ## Usage
-1. Get the `.exe` binary (compile the code or download from [releases](https://github.com/Eimaen/JustAsPlanned/releases))
+1. Get the `.exe` binary (build the code or download from [releases](https://github.com/Eimaen/JustAsPlanned/releases))
 2. If you have a steam version of the game, steam client should be running.
 3. Run the app.
 4. If you don't have a steam copy of the game, start Muse Dash when required.
