@@ -6,7 +6,7 @@
 
 ----
 ## Big warning!
-Somehow the software is since today treated as `Trojan:Win32/Wacatac.B!ml` by Windows Defender. Now with any release I publish will come a VirusTotal link. Again, **you shouldn't trust me. If you don't, build an app yourself.**
+Somehow the software is since 01.05.2023 treated as `Trojan:Win32/Wacatac.B!ml` by Windows Defender. Now with any release I publish will come a VirusTotal link. Again, **you shouldn't trust me. If you don't, build an app yourself.**
 
 ## Usage
 1. Get the `.exe` binary (build the code or download from [releases](https://github.com/Eimaen/JustAsPlanned/releases))
