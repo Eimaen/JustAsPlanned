@@ -103,38 +103,43 @@ namespace JustAsPlanned
             try
             {
                 IntPtr dlcCheckAddr = PatternScan(museDash, Patterns.SteamDlcCheck, "GameAssembly.dll");
-                IntPtr purchaseTimeAddr = PatternScan(museDash, Patterns.SteamDlcPurchaseDate, "GameAssembly.dll");
-                IntPtr isMasterUnlockedAddress = PatternScan(museDash, Patterns.IsSelectedAlbumUnlockedMaster, "GameAssembly.dll");
-
-                if (dlcCheckAddr != IntPtr.Zero && purchaseTimeAddr != IntPtr.Zero && isMasterUnlockedAddress != IntPtr.Zero)
+                if (dlcCheckAddr != IntPtr.Zero)
                 {
-                    if (!patches[0] && Write(museDash.Handle, dlcCheckAddr, new byte[] {
-                        0x48, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                        0xC3
-                    }) <= 0)
-                        return false;
-                    else
+                    if (Write(museDash.Handle, , new byte[] {
+                            0x48, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                            0xC3
+                        }) > 0)
                         patches[0] = true;
-
-                    if (!patches[1] && Write(museDash.Handle, purchaseTimeAddr, new byte[] {
-                        0xB8, 0x85, 0x47, 0xDE, 0x63,
-                        0xC3
-                    }) <= 0) 
-                        return false;
                     else
+                        return false;
+                }
+
+                IntPtr purchaseTimeAddr = PatternScan(museDash, Patterns.SteamDlcPurchaseDate, "GameAssembly.dll");
+                if (purchaseTimeAddr != IntPtr.Zero)
+                {
+                    if (Write(museDash.Handle, purchaseTimeAddr, new byte[] {
+                            0xB8, 0x85, 0x47, 0xDE, 0x63,
+                            0xC3
+                        }) > 0)
                         patches[1] = true;
-
-                    if (patches[2] && Write(museDash.Handle, isMasterUnlockedAddress, new byte[] {
-                        0x48, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                        0xC3
-                    }) <= 0) 
-                        return false;
                     else
+                        return false;
+                }
+
+                IntPtr isMasterUnlockedAddress = PatternScan(museDash, Patterns.IsSelectedAlbumUnlockedMaster, "GameAssembly.dll");
+                if (isMasterUnlockedAddress != IntPtr.Zero)
+                {
+                    if (Write(museDash.Handle, isMasterUnlockedAddress, new byte[] {
+                            0x48, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                            0xC3
+                        }) > 0)
                         patches[2] = true;
+                    else
+                        return false;
                 }
             }
             catch { return false; }
-            return true;
+            return patches[0] && patches[1] && patches[2];
         }
     }
 }
