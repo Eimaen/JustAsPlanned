@@ -51,7 +51,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="MuseDash.cs" />
-    <Compile Include="Utils\Memory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
