@@ -105,7 +105,7 @@ namespace JustAsPlanned
                 IntPtr dlcCheckAddr = PatternScan(museDash, Patterns.SteamDlcCheck, "GameAssembly.dll");
                 if (dlcCheckAddr != IntPtr.Zero)
                 {
-                    if (Write(museDash.Handle, , new byte[] {
+                    if (Write(museDash.Handle, dlcCheckAddr, new byte[] {
                             0x48, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                             0xC3
                         }) > 0)
