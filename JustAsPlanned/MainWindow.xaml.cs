@@ -5,21 +5,18 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace JustAsPlanned
@@ -55,16 +52,83 @@ namespace JustAsPlanned
             gridBackgroundBlur.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
         }));
 
+        void DisplayReset() => Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+        {
+            ColorAnimation ca = new ColorAnimation(System.Windows.Media.Color.FromRgb(0, 0, 0), new Duration(TimeSpan.FromSeconds(2)));
+            gridBackgroundBlur.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
+        }));
+
         void DisplaySuccess() => Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
         {
             ColorAnimation ca = new ColorAnimation(System.Windows.Media.Color.FromRgb(5, 110, 5), new Duration(TimeSpan.FromSeconds(2)));
             gridBackgroundBlur.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
         }));
 
+        void DisplayUpdateAvailable() => Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+        {
+            ColorAnimation ca = new ColorAnimation(System.Windows.Media.Color.FromRgb(50, 100, 235), new Duration(TimeSpan.FromSeconds(2)));
+            gridBackgroundBlur.Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
+        }));
+
+        private string CheckGitHubNewerVersion()
+        {
+            Version currentVersion = Assembly.GetEntryAssembly().GetName().Version;
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("JustAsPlanned", currentVersion.ToString()));
+            var response = client.GetAsync($"https://api.github.com/repos/Eimaen/JustAsPlanned/releases/latest").GetAwaiter().GetResult();
+            var responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+            if (response.IsSuccessStatusCode)
+            {
+                string pattern = "\"tag_name\"\\s*:\\s*\"([^\"]*)\"";
+                Match match = Regex.Match(responseBody, pattern);
+
+                if (match.Success)
+                {
+                    string tagValue = match.Groups[1].Value;
+                    Version latestVersion = Version.Parse(tagValue);
+                    Debug.WriteLine("Latest version tag: " + tagValue);
+
+                    if (latestVersion > currentVersion)
+                        return latestVersion.ToString();
+                    return string.Empty;
+                }
+                else
+                {
+                    Debug.WriteLine("Failed to check for a new release. No match found for tag_name property.");
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+
+            return string.Empty;
+        }
+
         private void Run()
         {
             Thread threadMain = new Thread(() =>
             {
+                try
+                {
+                    string newestVersion = CheckGitHubNewerVersion();
+                    if (newestVersion != string.Empty)
+                    {
+                        DisplayUpdateAvailable();
+                        UpdateStatus("There's a new update available!");
+                        Thread.Sleep(4000);
+                    }
+                }
+                catch
+                {
+                    DisplayCriticalFailture();
+                    UpdateStatus("Unable to check for updates!");
+                    Thread.Sleep(2000);
+                    DisplayReset();
+                }
+
                 try
                 {
                     RegistryKey steamRegKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Valve\Steam");
@@ -174,7 +238,7 @@ namespace JustAsPlanned
         }
 
         private List<BackgroundImage> backgroundImages = new List<BackgroundImage>
-        { 
+        {
             new BackgroundImage {
                 SourceUrl = "https://www.pixiv.net/en/artworks/81691677",
                 CopyrightMessage = "Artwork by U-Joe, Pixiv ID: 81691677",
