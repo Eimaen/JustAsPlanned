@@ -159,7 +159,6 @@ namespace JustAsPlanned
                             steamInstallationPath = System.IO.Path.Combine(steamInstallationPath.ToString(), "steam.exe");
                         actualProgress = 20;
                         UpdateStatus("Starting Muse Dash via Steam...");
-                        Thread.Sleep(3000);
                         if (File.Exists(steamInstallationPath as string))
                         {
                             Process.Start(new ProcessStartInfo
