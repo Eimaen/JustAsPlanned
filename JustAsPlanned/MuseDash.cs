@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 
 namespace JustAsPlanned
 {
@@ -20,6 +23,62 @@ namespace JustAsPlanned
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In] byte[] buffer, long size, out long lpNumberOfBytesWritten);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MODULEENTRY32
+        {
+            public int dwSize;
+            public int th32ModuleID;
+            public int th32ProcessID;
+            public int GlblcntUsage;
+            public int ProccntUsage;
+            public IntPtr modBaseAddr;
+            public int modBaseSize;
+            public IntPtr hModule;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szModule;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szExePath;
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr CreateToolhelp32Snapshot(int dwFlags, int th32ProcessID);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool Module32First(IntPtr hSnapshot, ref MODULEENTRY32 lpme);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool Module32Next(IntPtr hSnapshot, ref MODULEENTRY32 lpme);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CloseHandle(IntPtr hObject);
+
+        public static MODULEENTRY32 GetProcessModuleByFilename(Process process, string moduleName)
+        {
+            MODULEENTRY32 me = new MODULEENTRY32();
+            IntPtr hSnapshot = CreateToolhelp32Snapshot(0x00000008, process.Id);
+            if (hSnapshot != IntPtr.Zero)
+            {
+                me.dwSize = Marshal.SizeOf(typeof(MODULEENTRY32));
+
+                if (Module32First(hSnapshot, ref me))
+                {
+                    do
+                    {
+                        if (me.szModule.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
+                            break;
+                    }
+                    while (Module32Next(hSnapshot, ref me));
+                }
+
+                CloseHandle(hSnapshot);
+            }
+
+            return me;
+        }
 
         public static byte[] Read(IntPtr handle, IntPtr address, long size)
         {
@@ -79,10 +138,10 @@ namespace JustAsPlanned
 
         private static IntPtr PatternScan(Process process, string pattern, string moduleName)
         {
-            foreach (ProcessModule module in process.Modules)
-                if (module.ModuleName == moduleName)
-                    return PatternScan(process.Handle, pattern, module.BaseAddress, module.ModuleMemorySize);
-            return IntPtr.Zero;
+            MODULEENTRY32 targetModule = GetProcessModuleByFilename(process, moduleName);
+            if (targetModule.Equals(default(MODULEENTRY32)))
+                return IntPtr.Zero;
+            return PatternScan(process.Handle, pattern, targetModule.modBaseAddr, targetModule.modBaseSize);
         }
 
         public static long Write(IntPtr handle, IntPtr address, byte[] value)
@@ -93,10 +152,16 @@ namespace JustAsPlanned
 
         private static bool[] patches = new bool[] { false, false, false };
 
+        private static bool IsModuleLoaded(Process process, string moduleName)
+        {
+            return !GetProcessModuleByFilename(process, moduleName).Equals(default(MODULEENTRY32));
+        }
+
         public static bool Exploit(Process museDash)
         {
             try
             {
+                while (!IsModuleLoaded(museDash, "GameAssembly.dll")) Thread.Sleep(1);
                 IntPtr dlcCheckAddr = PatternScan(museDash, Patterns.SteamDlcCheck, "GameAssembly.dll");
                 if (dlcCheckAddr != IntPtr.Zero)
                 {

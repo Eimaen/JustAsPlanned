@@ -184,7 +184,7 @@ namespace JustAsPlanned
                             actualProgress = 30;
                             UpdateStatus("Process found, applying patch...");
                             int retries = 0;
-                            while (Process.GetProcessesByName("MuseDash").Any() && !MuseDash.Exploit(Process.GetProcessesByName("MuseDash")?.First()) && ++retries < 100)
+                            while (!MuseDash.Exploit(Process.GetProcessesByName("MuseDash")?.First()) && ++retries < 100)
                             {
                                 actualProgress = 30 + retries / 70;
                                 UpdateStatus($"Failed to patch, retrying... Attempt #{retries}");
@@ -199,7 +199,7 @@ namespace JustAsPlanned
                             {
                                 actualProgress = 100;
                                 DisplaySuccess();
-                                UpdateStatus("Muse Dash patched successfully.");
+                                UpdateStatus($"Muse Dash patched successfully in {retries + 1} attempt(s)");
                             }
                             Thread.Sleep(7500);
                             Environment.Exit(0);
