@@ -199,7 +199,7 @@ namespace JustAsPlanned
                             {
                                 actualProgress = 100;
                                 DisplaySuccess();
-                                UpdateStatus($"Muse Dash patched successfully in {retries + 1} attempt(s)");
+                                UpdateStatus($"Muse Dash patched successfully in {retries} attempt(s)");
                             }
                             Thread.Sleep(7500);
                             Environment.Exit(0);
